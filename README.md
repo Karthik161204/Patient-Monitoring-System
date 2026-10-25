@@ -1,4 +1,5 @@
-# Hospital Appointment Booking System
+# Patient Appointment Monitoring System
+
 
 A full-stack hospital appointment management application built with MongoDB,
 Express, React, and Node.js. It provides separate portals for patients, doctors,
