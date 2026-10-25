@@ -14,6 +14,7 @@ workflows.
 - [Project structure](#project-structure)
 - [Requirements](#requirements)
 - [Installation and setup](#installation-and-setup)
+- [Mobile and installable app](#mobile-and-installable-app)
 - [Demo accounts](#demo-accounts)
 - [Using the application](#using-the-application)
 - [Appointment and prescription rules](#appointment-and-prescription-rules)
@@ -37,6 +38,8 @@ The application supports the complete appointment journey:
    and can view a patient's combined history.
 
 ## Features
+
+- Responsive patient, doctor, and admin portals with installable PWA support.
 
 ### Patient portal
 
@@ -149,6 +152,24 @@ npm run dev
 
 The API runs at `http://localhost:5000`. Its health endpoint is
 `http://localhost:5000/api/health`.
+
+## Mobile and installable app
+
+The client is responsive across phone, tablet, and desktop sizes and can be
+installed from a supported mobile or desktop browser as a Progressive Web App.
+Serve the production client over HTTPS, open it in the browser, then choose
+**Install app** or **Add to Home Screen**. On iOS, use Safari's Share menu and
+choose **Add to Home Screen**. The install prompt is browser-dependent.
+
+The service worker caches only the app shell and static frontend assets; API
+requests and patient, doctor, and appointment data are not cached. Offline
+installation opens the app shell, but sign-in, booking, and other server-backed
+features require a network connection. Hosting must serve the SPA fallback for
+app routes and serve the manifest and service worker from the site root.
+
+This produces an installable web app, not native iOS/Android store packages.
+Publishing to the Apple App Store or Google Play requires a native wrapper and
+the corresponding developer accounts and review process.
 
 ### 2. Configure the frontend
 

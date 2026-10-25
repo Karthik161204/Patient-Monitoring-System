@@ -38,7 +38,7 @@ const PatientRegister = () => {
 
   return (
     <div className="auth-page">
-      <div className="auth-card" style={{ width: 380 }}>
+      <div className="auth-card auth-card-wide">
         <h2>Patient Registration</h2>
         {error && <p className="error-text">{error}</p>}
         <form onSubmit={handleSubmit}>

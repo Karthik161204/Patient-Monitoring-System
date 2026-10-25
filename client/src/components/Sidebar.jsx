@@ -7,7 +7,7 @@ const Sidebar = ({ items }) => {
   return (
     <aside className="sidebar">
       <div className="sidebar-title">City Care Hospital</div>
-      <nav>
+      <nav className="sidebar-nav" aria-label="Main navigation">
         {items.map((item) => (
           <NavLink
             key={item.to}
