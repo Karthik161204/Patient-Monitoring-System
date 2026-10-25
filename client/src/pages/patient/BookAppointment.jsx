@@ -3,20 +3,39 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 
 const pad = (n) => String(n).padStart(2, "0");
+const parseISODate = (dateString) => {
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
 
 const getCalendarDates = () => {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = today.getMonth();
-  const lastDay = new Date(year, month + 1, 0).getDate();
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 29);
 
-  return {
-    year,
-    month,
-    today: today.getDate(),
-    firstWeekday: new Date(year, month, 1).getDay(),
-    lastDay,
-  };
+  const months = [];
+  for (
+    let monthStart = new Date(start.getFullYear(), start.getMonth(), 1);
+    monthStart <= end;
+    monthStart = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 1)
+  ) {
+    const year = monthStart.getFullYear();
+    const month = monthStart.getMonth();
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    const firstDay = Math.max(1, month === start.getMonth() && year === start.getFullYear() ? start.getDate() : 1);
+    const finalDay = Math.min(lastDay, month === end.getMonth() && year === end.getFullYear() ? end.getDate() : lastDay);
+
+    months.push({
+      year,
+      month,
+      firstWeekday: new Date(year, month, 1).getDay(),
+      firstDay,
+      lastDay: finalDay,
+    });
+  }
+
+  return months;
 };
 
 const BookAppointment = () => {
@@ -29,11 +48,7 @@ const BookAppointment = () => {
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [error, setError] = useState("");
   const [confirmation, setConfirmation] = useState(null);
-  const calendar = getCalendarDates();
-  const monthLabel = new Date(calendar.year, calendar.month).toLocaleDateString(undefined, {
-    month: "long",
-    year: "numeric",
-  });
+  const calendarMonths = getCalendarDates();
 
   useEffect(() => {
     api.get(`/doctors/${id}`).then((res) => setDoctor(res.data));
@@ -178,46 +193,59 @@ const BookAppointment = () => {
         <div className="calendar-heading">
           <div>
             <p className="calendar-eyebrow">Appointment date</p>
-            <h4>{monthLabel}</h4>
+            <h4>Next 30 days</h4>
           </div>
-          <span className="calendar-month-note">This month</span>
+          <span className="calendar-month-note">Today and upcoming</span>
         </div>
-        <div className="calendar-grid calendar-weekdays" aria-hidden="true">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-            <span key={day}>{day}</span>
-          ))}
-        </div>
-        <div className="calendar-grid" role="group" aria-label={`${monthLabel} dates`}>
-          {Array.from({ length: calendar.firstWeekday }, (_, index) => (
-            <span className="calendar-empty" key={`empty-${index}`} aria-hidden="true" />
-          ))}
-          {Array.from({ length: calendar.lastDay }, (_, index) => {
-            const day = index + 1;
-            const iso = `${calendar.year}-${pad(calendar.month + 1)}-${pad(day)}`;
-            const isPast = day < calendar.today;
-            const isSelected = selectedDate === iso;
-            return (
-              <button
-                className={`calendar-day${isSelected ? " selected" : ""}${day === calendar.today ? " today" : ""}`}
-                key={iso}
-                type="button"
-                disabled={isPast}
-                aria-pressed={isSelected}
-                aria-label={new Date(calendar.year, calendar.month, day).toLocaleDateString(undefined, {
-                  weekday: "long",
-                  month: "long",
-                  day: "numeric",
+        {calendarMonths.map((calendar) => {
+          const monthLabel = new Date(calendar.year, calendar.month).toLocaleDateString(undefined, {
+            month: "long",
+            year: "numeric",
+          });
+          return (
+            <section className="calendar-month" key={`${calendar.year}-${calendar.month}`}>
+              <h5>{monthLabel}</h5>
+              <div className="calendar-grid calendar-weekdays" aria-hidden="true">
+                {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                  <span key={day}>{day}</span>
+                ))}
+              </div>
+              <div className="calendar-grid" role="group" aria-label={`${monthLabel} available dates`}>
+                {Array.from({ length: calendar.firstWeekday }, (_, index) => (
+                  <span className="calendar-empty" key={`empty-${index}`} aria-hidden="true" />
+                ))}
+                {Array.from({ length: calendar.lastDay - calendar.firstDay + 1 }, (_, index) => {
+                  const day = calendar.firstDay + index;
+                  const iso = `${calendar.year}-${pad(calendar.month + 1)}-${pad(day)}`;
+                  const isToday =
+                    day === new Date().getDate() &&
+                    calendar.month === new Date().getMonth() &&
+                    calendar.year === new Date().getFullYear();
+                  const isSelected = selectedDate === iso;
+                  return (
+                    <button
+                      className={`calendar-day${isSelected ? " selected" : ""}${isToday ? " today" : ""}`}
+                      key={iso}
+                      type="button"
+                      aria-pressed={isSelected}
+                      aria-label={new Date(calendar.year, calendar.month, day).toLocaleDateString(undefined, {
+                        weekday: "long",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                      onClick={() => setSelectedDate(iso)}
+                    >
+                      {day}
+                    </button>
+                  );
                 })}
-                onClick={() => setSelectedDate(iso)}
-              >
-                {day}
-              </button>
-            );
-          })}
-        </div>
+              </div>
+            </section>
+          );
+        })}
         <p className="calendar-selection" aria-live="polite">
           {selectedDate
-            ? new Date(calendar.year, calendar.month, Number(selectedDate.slice(-2))).toLocaleDateString(undefined, {
+            ? parseISODate(selectedDate).toLocaleDateString(undefined, {
                 weekday: "long",
                 month: "long",
                 day: "numeric",

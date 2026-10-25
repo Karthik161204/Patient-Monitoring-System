@@ -14,24 +14,37 @@ const appointmentTimes = Array.from({ length: 16 }, (_, index) => {
   return `${String(hour).padStart(2, "0")}:${String(minutes).padStart(2, "0")} ${suffix}`;
 });
 
-// Booking is only allowed within the current calendar month
+// Booking is available today and for the following 29 calendar days.
 const isWithinBookingWindow = (dateStr) => {
   if (!dateStr || !/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return false;
 
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const selectedDate = new Date(year, month - 1, day);
+  if (
+    selectedDate.getFullYear() !== year ||
+    selectedDate.getMonth() !== month - 1 ||
+    selectedDate.getDate() !== day
+  ) {
+    return false;
+  }
+
   const now = new Date();
   const pad = (n) => String(n).padStart(2, "0");
-  const todayStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-  const currentYearMonth = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
 
-  // Must be in the current calendar month and not in the past
-  return dateStr.startsWith(currentYearMonth) && dateStr >= todayStr;
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const latestDate = new Date(today);
+  latestDate.setDate(latestDate.getDate() + 29);
+  const toDateString = (date) =>
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+
+  return dateStr >= toDateString(today) && dateStr <= toDateString(latestDate);
 };
 
 router.get("/availability/:doctorId", protect, allowRoles("patient"), async (req, res) => {
   try {
     const { date } = req.query;
     if (!isWithinBookingWindow(date)) {
-      return res.status(400).json({ message: "Choose a valid date in the current month" });
+      return res.status(400).json({ message: "Choose a date within the next 30 days" });
     }
 
     const doctor = await Doctor.findById(req.params.doctorId);
@@ -74,7 +87,7 @@ router.post("/", protect, allowRoles("patient"), async (req, res) => {
 
     if (!isWithinBookingWindow(appointmentDate)) {
       return res.status(400).json({
-        message: "Appointments can only be booked within the current month",
+        message: "Appointments can only be booked within the next 30 days",
       });
     }
 

@@ -237,8 +237,9 @@ pages require the matching user role.
 
 ## Appointment and prescription rules
 
-1. **Booking window:** appointments can be booked only for today or a future
-   date in the current calendar month.
+1. **Booking window:** appointments can be booked for today or any of the
+   following 29 days (a rolling 30-day window), including dates in the next
+   calendar month.
 2. **Appointment times:** the system offers 30-minute slots from 9:00 AM
    through 4:30 PM. On the current day, past slots are not available.
 3. **Slot exclusivity:** a doctor cannot have two active appointments for the
