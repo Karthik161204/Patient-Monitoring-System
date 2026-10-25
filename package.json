@@ -1,0 +1,12 @@
+{
+  "name": "hospital-appointment-system-root",
+  "version": "1.0.0",
+  "description": "Hospital Appointment Booking System",
+  "scripts": {
+    "build": "cd client && npm install && npm run build && cd ../server && npm install",
+    "start": "cd server && node server.js",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "seed": "cd server && npm run seed"
+  }
+}
