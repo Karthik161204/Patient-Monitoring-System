@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import Navbar from "../../components/Navbar";
+import DoctorAvailability from "../../components/DoctorAvailability";
 import { useAuth } from "../../context/AuthContext";
 
 const sidebarItems = [
@@ -16,6 +17,7 @@ const DoctorLayout = () => {
       <div className="main-content">
         <Navbar title={`Welcome, ${user?.name || "Doctor"}`} />
         <div className="page-body">
+          <DoctorAvailability />
           <Outlet />
         </div>
       </div>

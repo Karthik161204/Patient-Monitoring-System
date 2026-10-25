@@ -28,6 +28,11 @@ const ManageDoctors = () => {
     load();
   }, []);
 
+  useEffect(() => {
+    window.addEventListener("focus", load);
+    return () => window.removeEventListener("focus", load);
+  }, []);
+
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {

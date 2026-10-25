@@ -24,9 +24,11 @@ const DoctorAppointments = () => {
   const [todaysList, setTodaysList] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const load = async () => {
     setLoading(true);
+    setError("");
     try {
       const [todayRes, allRes] = await Promise.all([
         api.get("/doctors/my-appointments", { params: { date: todayISO() } }),
@@ -34,6 +36,8 @@ const DoctorAppointments = () => {
       ]);
       setTodaysList(todayRes.data);
       setUpcoming(allRes.data.filter((a) => a.appointmentDate > todayISO()));
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Could not load your dashboard");
     } finally {
       setLoading(false);
     }
@@ -45,6 +49,8 @@ const DoctorAppointments = () => {
 
   return (
     <div>
+      {error && <p className="error-text" role="alert">{error}</p>}
+
       <h3>Today's Appointments</h3>
       {loading ? (
         <p className="muted">Loading...</p>

@@ -262,6 +262,10 @@ button, input, select, textarea { font: inherit; }
 .summary-box { background: #fff; border: 1px solid #e6edf4; border-radius: 8px; padding: 16px 18px; }
 .summary-box .value { font-size: 26px; font-weight: 700; color: #1560bd; }
 .summary-box .label { font-size: 13px; color: #667; margin-top: 4px; }
+.doctor-availability { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.doctor-availability h3,
+.doctor-availability p { margin: 0; }
+.doctor-availability p { margin-top: 6px; color: #567; }
 
 table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
 th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eef2f7; font-size: 14px; }
@@ -387,6 +391,7 @@ th { background: #f3f8fd; color: #33475b; font-weight: 600; font-size: 13px; }
   .card { padding: 14px; }
   .card-actions { flex-wrap: wrap; }
   .btn { min-height: 40px; }
+  .doctor-availability { align-items: flex-start; flex-direction: column; }
   .form-group input,
   .form-group select,
   .form-group textarea { min-height: 44px; font-size: 16px; }

@@ -40,6 +40,19 @@ const DoctorSearch = () => {
     fetchDoctors();
   }, []);
 
+  useEffect(() => {
+    const refreshDoctors = () => {
+      if (activeSpecialty) {
+        fetchDoctors({ specialty: activeSpecialty });
+      } else {
+        fetchDoctors(search ? { search } : {});
+      }
+    };
+
+    window.addEventListener("focus", refreshDoctors);
+    return () => window.removeEventListener("focus", refreshDoctors);
+  }, [activeSpecialty, search]);
+
   const handleSearch = (e) => {
     e.preventDefault();
     setActiveSpecialty("");

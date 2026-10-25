@@ -54,6 +54,8 @@ The application supports the complete appointment journey:
 - Today's appointments and upcoming appointments.
 - Patient details and appointment history.
 - Appointment queue ordered by token.
+- Set appointment availability from the doctor dashboard; the saved status is
+  shown to patients and administrators and prevents new bookings while off.
 - Consultation workflow and prescription entry.
 - Prescription history.
 

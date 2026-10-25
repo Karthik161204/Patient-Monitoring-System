@@ -8,6 +8,34 @@ const { protect, allowRoles } = require("../middleware/auth");
 
 const router = express.Router();
 
+router.get("/me", protect, allowRoles("doctor"), async (req, res) => {
+  try {
+    const doctor = await Doctor.findOne({ user: req.user.id }).populate("user", "name email");
+    if (!doctor) return res.status(404).json({ message: "Doctor profile not found" });
+    res.json(doctor);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+router.put("/me/availability", protect, allowRoles("doctor"), async (req, res) => {
+  try {
+    if (typeof req.body.available !== "boolean") {
+      return res.status(400).json({ message: "Availability must be true or false" });
+    }
+
+    const doctor = await Doctor.findOne({ user: req.user.id });
+    if (!doctor) return res.status(404).json({ message: "Doctor profile not found" });
+
+    doctor.available = req.body.available;
+    await doctor.save();
+    await doctor.populate("user", "name email");
+    res.json(doctor);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     const { specialty, search } = req.query;
