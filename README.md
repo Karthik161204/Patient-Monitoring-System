@@ -63,6 +63,7 @@ The application supports the complete appointment journey:
 
 - Dashboard totals for patients, doctors, today's appointments, and completed
   appointments.
+- Quick view of doctors who are currently unavailable.
 - Create and manage doctor profiles, including specialty, experience, phone,
   and availability.
 - View patient and appointment lists.

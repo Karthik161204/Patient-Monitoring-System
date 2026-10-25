@@ -68,6 +68,17 @@ router.get("/doctors", async (req, res) => {
   }
 });
 
+router.get("/doctors/unavailable", async (req, res) => {
+  try {
+    const doctors = await Doctor.find({ available: false })
+      .populate("user", "name")
+      .sort({ updatedAt: -1 });
+    res.json(doctors);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
 router.post("/doctors", async (req, res) => {
   try {
     const { name, email, password, specialty, experience, phone } = req.body;

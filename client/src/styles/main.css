@@ -266,6 +266,15 @@ button, input, select, textarea { font: inherit; }
 .doctor-availability h3,
 .doctor-availability p { margin: 0; }
 .doctor-availability p { margin-top: 6px; color: #567; }
+.unavailable-doctors-section { margin-bottom: 24px; }
+.unavailable-doctors-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.unavailable-doctors-heading h3 { margin: 0; }
+.unavailable-doctors-grid { margin-top: 0; }
+.unavailable-doctor-card { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.unavailable-doctor-card h4,
+.unavailable-doctor-card p { margin: 0; }
+.unavailable-doctor-card p { margin-top: 5px; color: #667; font-size: 13px; }
+.unavailable-doctors-link { margin-top: 12px; }
 
 table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
 th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eef2f7; font-size: 14px; }
